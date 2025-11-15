@@ -55,6 +55,16 @@ namespace TestOAuth2.Controllers {
 
         // ---------------- GOOGLE OAuth2 ----------------
 
+        [HttpPost("google-test")]
+        public IActionResult TestGoogle ([FromBody] JsonElement body) {
+            var google = HttpContext.RequestServices.GetRequiredService<IOptions<GoogleOptions>>().Value;
+
+            Console.WriteLine("CLIENT ID: " + google.ClientId);
+            Console.WriteLine("CLIENT SECRET: " + google.ClientSecret);
+
+            return Ok(new { clientId = google.ClientId });
+        }
+
         [HttpPost("google")]
         public async Task<IActionResult> GoogleLogin ([FromBody] JsonElement body) {
             _logger.LogInformation("google login");
