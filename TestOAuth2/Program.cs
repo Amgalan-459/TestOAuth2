@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -52,6 +53,9 @@ builder.Services.AddCors(options =>
             .AllowCredentials();
     });
 });
+
+builder.Services.Configure<GoogleOptions>(
+    builder.Configuration.GetSection("Google"));
 
 var app = builder.Build();
 
