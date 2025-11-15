@@ -57,6 +57,7 @@ builder.Services.AddCors(options =>
 builder.Services.Configure<GoogleOptions>(
     builder.Configuration.GetSection("Google"));
 
+
 var app = builder.Build();
 
 app.UseAuthentication();
