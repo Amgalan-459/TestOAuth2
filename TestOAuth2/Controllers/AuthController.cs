@@ -14,10 +14,12 @@ namespace TestOAuth2.Controllers {
 
         private readonly JwtService _jwt;
         private readonly GoogleTokenValidator _google;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController (JwtService jwt, GoogleTokenValidator google) {
+        public AuthController (JwtService jwt, GoogleTokenValidator google, ILogger<AuthController> logger) {
             _jwt = jwt;
             _google = google;
+            _logger = logger;
         }
 
         // ---------------- JWT EMAIL/PASSWORD ----------------
@@ -55,8 +57,11 @@ namespace TestOAuth2.Controllers {
 
         [HttpPost("google")]
         public async Task<IActionResult> GoogleLogin ([FromBody] JsonElement body) {
+            _logger.LogInformation("google login");
             string code = body.GetProperty("code").GetString()!;
             string redirectUri = body.GetProperty("redirectUri").GetString()!;
+
+            Console.WriteLine($"code: {code}");
 
             var google = HttpContext.RequestServices.GetRequiredService<IOptions<GoogleOptions>>().Value;
 
@@ -73,6 +78,9 @@ namespace TestOAuth2.Controllers {
             var response = await http.PostAsync(
                 "https://oauth2.googleapis.com/token",
                 new FormUrlEncodedContent(data));
+
+            var rawGoogleResponse = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("GOOGLE RESPONSE: " + rawGoogleResponse);
 
             if (!response.IsSuccessStatusCode)
                 return Unauthorized("token_exchange_failed");
